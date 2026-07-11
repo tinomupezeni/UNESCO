@@ -14,6 +14,7 @@ A complete redesign of a UNESCO country-specific website built with Laravel. Ser
 
 - [Project Plan](docs/PROJECT_PLAN.md) — Full project overview, data models, design system, and development phases
 - [Sitemap](docs/SITEMAP.md) — URL structure and navigation hierarchy
+- [Engineering Philosophy](docs/ENGINEERING_PHILOSOPHY.md) — Principles and mindset for building elite software
 
 ## Getting Started
 
