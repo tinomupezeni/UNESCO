@@ -19,7 +19,6 @@ class Page extends Model implements HasMedia
         'content',
         'slug',
         'status',
-        'sort_order',
         'meta_title',
         'meta_description',
     ];
@@ -27,10 +26,6 @@ class Page extends Model implements HasMedia
     protected $translatable = [
         'title',
         'content',
-    ];
-
-    protected $casts = [
-        'sort_order' => 'integer',
     ];
 
     protected static function booted(): void

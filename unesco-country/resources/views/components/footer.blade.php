@@ -9,7 +9,7 @@
             {{-- Brand Column --}}
             <div class="md:col-span-1">
                 <div class="flex items-center space-x-2 mb-4">
-                    <img src="{{ asset('images/unesco-logo.webp') }}" alt="UNESCO Logo" class="h-10 w-auto">
+                    <img src="{{ asset('unesco-icon.png') }}" alt="UNESCO Logo" class="h-10 w-auto">
                     <span class="text-lg font-semibold">Zimbabwe</span>
                 </div>
                 <p class="text-white/70 text-sm leading-relaxed">

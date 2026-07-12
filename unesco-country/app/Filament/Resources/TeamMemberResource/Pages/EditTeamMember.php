@@ -4,9 +4,9 @@ namespace App\Filament\Resources\TeamMemberResource\Pages;
 
 use App\Filament\Resources\TeamMemberResource;
 use Filament\Actions\DeleteAction;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Pages\BaseEditRecord;
 
-class EditTeamMember extends EditRecord
+class EditTeamMember extends BaseEditRecord
 {
     protected static string $resource = TeamMemberResource::class;
 

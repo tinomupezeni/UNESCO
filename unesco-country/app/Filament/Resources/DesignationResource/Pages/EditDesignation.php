@@ -4,9 +4,9 @@ namespace App\Filament\Resources\DesignationResource\Pages;
 
 use App\Filament\Resources\DesignationResource;
 use Filament\Actions\DeleteAction;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Pages\BaseEditRecord;
 
-class EditDesignation extends EditRecord
+class EditDesignation extends BaseEditRecord
 {
     protected static string $resource = DesignationResource::class;
 

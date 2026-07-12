@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\PublicationResource\Pages;
 
 use App\Filament\Resources\PublicationResource;
-use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\Pages\BaseCreateRecord;
 
-class CreatePublication extends CreateRecord
+class CreatePublication extends BaseCreateRecord
 {
     protected static string $resource = PublicationResource::class;
 }

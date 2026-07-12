@@ -5,12 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ArticleResource\Pages;
 use App\Models\Article;
 use BackedEnum;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-
+use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use UnitEnum;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -23,49 +25,70 @@ class ArticleResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Content';
+    protected static string|UnitEnum|null $navigationGroup = 'Content';
 
     protected static ?int $navigationSort = 2;
+
+    protected static array $translatableAttributes = ['title', 'excerpt', 'content'];
+
+    protected static array $locales = ['en', 'fr'];
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextInput::make('title')
-                    ->required()
-                    ->maxLength(255)
+                Tabs::make('Content')
+                    ->tabs(array_map(
+                        fn (string $locale) => Tabs\Tab::make(ucfirst($locale))
+                            ->icon('heroicon-o-language')
+                            ->schema(array_map(
+                                fn (string $attr) => match ($attr) {
+                                    'title' => TextInput::make("{$attr}_{$locale}")
+                                        ->label($locale === 'fr' ? 'Titre' : ucfirst($attr))
+                                        ->required($locale === 'en')
+                                        ->maxLength(255),
+                                    'excerpt' => Textarea::make("{$attr}_{$locale}")
+                                        ->label('Excerpt')
+                                        ->rows(3)
+                                        ->columnSpanFull(),
+                                    default => RichEditor::make("{$attr}_{$locale}")
+                                        ->label(ucfirst($attr))
+                                        ->columnSpanFull(),
+                                },
+                                static::$translatableAttributes,
+                            )),
+                        static::$locales,
+                    ))
                     ->columnSpanFull(),
-                TextInput::make('slug')
-                    ->disabled()
-                    ->dehydrated()
-                    ->maxLength(255),
-                TextInput::make('excerpt')
-                    ->maxLength(500)
-                    ->columnSpanFull(),
-                RichEditor::make('content')
-                    ->columnSpanFull(),
-                Select::make('category')
-                    ->options([
-                        'news' => 'News',
-                        'blog' => 'Blog',
-                        'report' => 'Report',
-                        'announcement' => 'Announcement',
+
+                Section::make('Details')
+                    ->icon('heroicon-o-information-circle')
+                    ->schema([
+                        TextInput::make('slug')
+                            ->disabled()
+                            ->dehydrated()
+                            ->maxLength(255),
+                        Select::make('category')
+                            ->options([
+                                'news' => 'News',
+                                'story' => 'Story',
+                                'press_release' => 'Press Release',
+                            ])
+                            ->searchable(),
+                        Select::make('status')
+                            ->label('Status')
+                            ->options([
+                                'published' => 'Published',
+                                'draft' => 'Draft',
+                            ])
+                            ->required(),
+                        DatePicker::make('published_at'),
+                        TextInput::make('sdg_alignment')
+                            ->maxLength(255)
+                            ->helperText('SDG alignment (e.g. 4, 13)')
+                            ->columnSpanFull(),
                     ])
-                    ->searchable(),
-                Select::make('status')
-                    ->label('Status')
-                    ->options([
-                        'published' => 'Published',
-                        'draft' => 'Draft',
-                    ])
-                    ->required(),
-                DateTimePicker::make('published_at'),
-                TextInput::make('meta_title')
-                    ->maxLength(255)
-                    ->columnSpanFull(),
-                TextInput::make('meta_description')
-                    ->maxLength(255)
-                    ->columnSpanFull(),
+                    ->columns(2),
             ]);
     }
 
@@ -90,10 +113,10 @@ class ArticleResource extends Resource
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 \Filament\Actions\EditAction::make(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 \Filament\Actions\BulkActionGroup::make([
                     \Filament\Actions\DeleteBulkAction::make(),
                 ]),

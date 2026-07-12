@@ -22,8 +22,7 @@ class Article extends Model implements HasMedia
         'category',
         'status',
         'published_at',
-        'meta_title',
-        'meta_description',
+        'sdg_alignment',
     ];
 
     protected $translatable = [
@@ -34,6 +33,11 @@ class Article extends Model implements HasMedia
 
     protected $casts = [
         'published_at' => 'datetime',
+        'sdg_alignment' => 'array',
+    ];
+
+    protected $attributes = [
+        'sdg_alignment' => '[]',
     ];
 
     protected static function booted(): void
@@ -58,7 +62,7 @@ class Article extends Model implements HasMedia
 
     public function countries()
     {
-        return $this->belongsToMany(Country::class);
+        return $this->belongsToMany(Country::class, 'country_article');
     }
 
     public function scopePublished($query)

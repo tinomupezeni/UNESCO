@@ -8,7 +8,8 @@
 
             {{-- Logo --}}
             <a href="{{ route('home', ['language' => $currentLang]) }}" class="flex flex-col items-center leading-none">
-                <img src="{{ asset('images/unesco-logo.webp') }}" alt="UNESCO Logo" class="h-10 w-auto">
+                <img src="{{ asset('Logo_UNESCO_2021.svg.webp') }}" alt="UNESCO Logo" class="h-10 w-auto">
+                
                 <span class="text-[7px] font-semibold tracking-wide uppercase">Zimbabwe</span>
             </a>
 

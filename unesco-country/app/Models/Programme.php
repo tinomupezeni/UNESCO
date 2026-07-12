@@ -20,9 +20,8 @@ class Programme extends Model implements HasMedia
         'content',
         'slug',
         'status',
-        'sort_order',
-        'meta_title',
-        'meta_description',
+        'icon',
+        'themes',
     ];
 
     protected $translatable = [
@@ -32,7 +31,11 @@ class Programme extends Model implements HasMedia
     ];
 
     protected $casts = [
-        'sort_order' => 'integer',
+        'themes' => 'array',
+    ];
+
+    protected $attributes = [
+        'themes' => '[]',
     ];
 
     protected static function booted(): void

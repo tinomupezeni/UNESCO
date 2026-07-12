@@ -15,14 +15,10 @@ class Designation extends Model implements HasMedia
         'country_id',
         'name',
         'type',
-        'year',
         'description',
-        'coordinates',
+        'external_url',
     ];
 
-    protected $casts = [
-        'year' => 'integer',
-    ];
 
     public function country()
     {

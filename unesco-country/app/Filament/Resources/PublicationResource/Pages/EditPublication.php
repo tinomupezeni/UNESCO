@@ -4,9 +4,9 @@ namespace App\Filament\Resources\PublicationResource\Pages;
 
 use App\Filament\Resources\PublicationResource;
 use Filament\Actions\DeleteAction;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Pages\BaseEditRecord;
 
-class EditPublication extends EditRecord
+class EditPublication extends BaseEditRecord
 {
     protected static string $resource = PublicationResource::class;
 

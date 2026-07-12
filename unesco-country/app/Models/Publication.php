@@ -19,8 +19,12 @@ class Publication extends Model implements HasMedia
         'description',
         'slug',
         'author',
-        'published_date',
-        'status',
+        'cover_image',
+        'file_path',
+        'publication_date',
+        'category',
+        'isbn',
+        'pages',
         'meta_title',
         'meta_description',
     ];
@@ -31,7 +35,7 @@ class Publication extends Model implements HasMedia
     ];
 
     protected $casts = [
-        'published_date' => 'date',
+        'publication_date' => 'date',
     ];
 
     protected static function booted(): void

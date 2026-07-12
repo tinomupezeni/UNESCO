@@ -17,7 +17,7 @@ class TeamMember extends Model implements HasMedia
         'title',
         'bio',
         'email',
-        'sort_order',
+        'social_links',
     ];
 
     protected $translatable = [
@@ -26,8 +26,27 @@ class TeamMember extends Model implements HasMedia
     ];
 
     protected $casts = [
-        'sort_order' => 'integer',
+        'social_links' => 'array',
     ];
+
+    protected $attributes = [
+        'social_links' => '{}',
+    ];
+
+    public function getSocialLinksAttribute($value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if (is_string($value) && ! empty($value)) {
+            $decoded = json_decode($value, true);
+
+            return is_array($decoded) ? $decoded : [];
+        }
+
+        return [];
+    }
 
     public function registerMediaCollections(): void
     {

@@ -14,7 +14,8 @@ class Country extends Model
         'name',
         'description',
         'code',
-        'iso_code',
+        'profile_url',
+        'data_url',
     ];
 
     protected $translatable = [

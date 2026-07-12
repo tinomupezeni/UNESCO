@@ -53,10 +53,10 @@ class TagResource extends Resource
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 \Filament\Actions\EditAction::make(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 \Filament\Actions\BulkActionGroup::make([
                     \Filament\Actions\DeleteBulkAction::make(),
                 ]),

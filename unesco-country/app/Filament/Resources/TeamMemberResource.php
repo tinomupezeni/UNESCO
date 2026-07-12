@@ -8,6 +8,8 @@ use BackedEnum;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use UnitEnum;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -20,9 +22,13 @@ class TeamMemberResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
-    protected static string | UnitEnum | null $navigationGroup = 'People';
+    protected static string|UnitEnum|null $navigationGroup = 'People';
 
     protected static ?int $navigationSort = 1;
+
+    protected static array $translatableAttributes = ['title', 'bio'];
+
+    protected static array $locales = ['en', 'fr'];
 
     public static function form(Schema $schema): Schema
     {
@@ -31,17 +37,45 @@ class TeamMemberResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('title')
-                    ->maxLength(255),
-                Textarea::make('bio')
-                    ->rows(3)
+
+                Tabs::make('Content')
+                    ->tabs(array_map(
+                        fn (string $locale) => Tabs\Tab::make(ucfirst($locale))
+                            ->icon('heroicon-o-language')
+                            ->schema(array_map(
+                                fn (string $attr) => match ($attr) {
+                                    'title' => TextInput::make("{$attr}_{$locale}")
+                                        ->label('Title')
+                                        ->maxLength(255),
+                                    default => Textarea::make("{$attr}_{$locale}")
+                                        ->label(ucfirst($attr))
+                                        ->rows(3)
+                                        ->columnSpanFull(),
+                                },
+                                static::$translatableAttributes,
+                            )),
+                        static::$locales,
+                    ))
                     ->columnSpanFull(),
-                TextInput::make('email')
-                    ->email()
-                    ->maxLength(255),
-                TextInput::make('sort_order')
-                    ->numeric()
-                    ->default(0),
+
+                Section::make('Details')
+                    ->icon('heroicon-o-information-circle')
+                    ->schema([
+                        TextInput::make('email')
+                            ->email()
+                            ->maxLength(255),
+                        TextInput::make('social_links.facebook')
+                            ->label('Facebook URL')
+                            ->maxLength(255),
+                        TextInput::make('social_links.twitter')
+                            ->label('Twitter/X URL')
+                            ->maxLength(255),
+                        TextInput::make('social_links.linkedin')
+                            ->label('LinkedIn URL')
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -56,16 +90,14 @@ class TeamMemberResource extends Resource
                     ->searchable(),
                 TextColumn::make('email')
                     ->searchable(),
-                TextColumn::make('sort_order')
-                    ->sortable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 \Filament\Actions\EditAction::make(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 \Filament\Actions\BulkActionGroup::make([
                     \Filament\Actions\DeleteBulkAction::make(),
                 ]),

@@ -11,7 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use UnitEnum;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 
@@ -21,7 +21,7 @@ class DesignationResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Reference';
+    protected static string|UnitEnum|null $navigationGroup = 'Reference';
 
     protected static ?int $navigationSort = 2;
 
@@ -39,22 +39,19 @@ class DesignationResource extends Resource
                     ->maxLength(255),
                 Select::make('type')
                     ->options([
-                        'World Heritage Site' => 'World Heritage Site',
-                        'Biosphere Reserve' => 'Biosphere Reserve',
-                        'Global Geopark' => 'Global Geopark',
-                        'Intangible Cultural Heritage' => 'Intangible Cultural Heritage',
+                        'world_heritage' => 'World Heritage Site',
+                        'biosphere_reserve' => 'Biosphere Reserve',
+                        'creative_city' => 'Creative City',
+                        'intangible_heritage' => 'Intangible Heritage',
+                        'memory_of_world' => 'Memory of the World',
                     ])
                     ->required(),
-                TextInput::make('year')
-                    ->numeric()
-                    ->required()
-                    ->minValue(1900)
-                    ->maxValue(date('Y')),
                 Textarea::make('description')
                     ->rows(3)
                     ->columnSpanFull(),
-                TextInput::make('coordinates')
-                    ->maxLength(255),
+                TextInput::make('external_url')
+                    ->maxLength(255)
+                    ->helperText('Link to external site'),
             ]);
     }
 
@@ -62,26 +59,42 @@ class DesignationResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('country.name')
+                Tables\Columns\TextColumn::make('country.name')
                     ->sortable(),
-                TextColumn::make('type')
-                    ->badge(),
-                TextColumn::make('year')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('type')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'world_heritage' => 'World Heritage Site',
+                        'biosphere_reserve' => 'Biosphere Reserve',
+                        'creative_city' => 'Creative City',
+                        'intangible_heritage' => 'Intangible Heritage',
+                        'memory_of_world' => 'Memory of the World',
+                        default => $state,
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'world_heritage' => 'success',
+                        'biosphere_reserve' => 'info',
+                        'creative_city' => 'warning',
+                        'intangible_heritage' => 'danger',
+                        'memory_of_world' => 'gray',
+                        default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('external_url')
+                    ->limit(30)
+                    ->placeholder('—'),
             ])
             ->filters([
-                //
-            ])
-            ->recordActions([
-                \Filament\Actions\EditAction::make(),
-            ])
-            ->toolbarActions([
-                \Filament\Actions\BulkActionGroup::make([
-                    \Filament\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Filters\SelectFilter::make('type')
+                    ->options([
+                        'world_heritage' => 'World Heritage Site',
+                        'biosphere_reserve' => 'Biosphere Reserve',
+                        'creative_city' => 'Creative City',
+                        'intangible_heritage' => 'Intangible Heritage',
+                        'memory_of_world' => 'Memory of the World',
+                    ]),
             ]);
     }
 

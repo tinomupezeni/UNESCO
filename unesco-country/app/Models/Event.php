@@ -18,11 +18,11 @@ class Event extends Model
         'content',
         'slug',
         'location',
-        'start_date',
-        'end_date',
+        'event_date',
+        'event_end_date',
         'status',
-        'meta_title',
-        'meta_description',
+        'event_type',
+        'registration_url',
     ];
 
     protected $translatable = [
@@ -32,8 +32,8 @@ class Event extends Model
     ];
 
     protected $casts = [
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
+        'event_date' => 'date',
+        'event_end_date' => 'date',
     ];
 
     protected static function booted(): void
@@ -64,12 +64,12 @@ class Event extends Model
 
     public function scopeUpcoming($query)
     {
-        return $query->where('start_date', '>=', now())
+        return $query->where('event_date', '>=', now())
             ->where('status', 'published');
     }
 
     public function scopePast($query)
     {
-        return $query->where('end_date', '<', now());
+        return $query->where('event_end_date', '<', now());
     }
 }
