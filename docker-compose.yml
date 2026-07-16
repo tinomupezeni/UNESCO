@@ -1,0 +1,63 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: unesco-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=unesco
+      - DB_USERNAME=unesco
+      - DB_PASSWORD=unesco
+    networks:
+      - unesco
+
+  node:
+    image: node:22-slim
+    container_name: unesco-node
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - unesco
+
+  mysql:
+    image: mysql:8.0
+    container_name: unesco-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: unesco
+      MYSQL_USER: unesco
+      MYSQL_PASSWORD: unesco
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - unesco
+
+volumes:
+  mysql-data:
+
+networks:
+  unesco:
+    driver: bridge
