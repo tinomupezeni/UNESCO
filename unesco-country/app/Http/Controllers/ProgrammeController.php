@@ -18,6 +18,12 @@ class ProgrammeController extends Controller
     {
         $programme = Programme::where('slug', $slug)->firstOrFail();
 
-        return view('programmes.show', compact('programme'));
+        // Fetch latest 3 published articles (news/stories) related/general
+        $relatedNews = \App\Models\Article::published()
+            ->latest('published_at')
+            ->limit(3)
+            ->get();
+
+        return view('programmes.show', compact('programme', 'relatedNews'));
     }
 }

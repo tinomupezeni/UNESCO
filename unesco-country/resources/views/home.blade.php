@@ -74,23 +74,25 @@
             </p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach ([
-                ['title' => 'Education', 'desc' => 'Transforming lives through quality education, fostering inclusiveness and lifelong learning for all Zimbabweans.', 'icon' => 'M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z', 'image' => 'programme-education.jpg'],
-
-                ['title' => 'Natural Sciences', 'desc' => 'Advancing scientific research and innovation to address environmental challenges in Zimbabwe.', 'icon' => 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z', 'image' => 'programme-science.jpg'],
-                ['title' => 'Culture', 'desc' => 'Protecting and safeguarding Zimbabwe\'s cultural and natural heritage for future generations.', 'icon' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'image' => 'programme-culture.jpg'],
-                ['title' => 'Communication & Information', 'desc' => 'Expanding access to information, media development, and freedom of press in Zimbabwe.', 'icon' => 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z','image' => 'programme-communication.jpg'],
-            ] as $programme)
+            @foreach ($programmes as $programme)
                  <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
-        <img src="{{ asset('images/' . $programme['image']) }}" alt="{{ $programme['title'] }}" class="w-full h-40 object-cover">
-        <div class="p-6">
-            <h3 class="text-xl font-bold text-[#003DA5] mb-2">{{ $programme['title'] }}</h3>
-            <p class="text-gray-600 text-sm leading-relaxed">{{ $programme['desc'] }}</p>
-            <a href="{{ route('programmes.index', ['language' => $language]) }}" class="inline-block mt-4 text-[#0072C6] font-medium hover:text-[#003DA5] transition-colors text-sm">
-                Discover &rarr;
-            </a>
-        </div>
-    </div>
+                     @if($programme->getFirstMediaUrl('featured_image'))
+                         <img src="{{ $programme->getFirstMediaUrl('featured_image') }}" alt="{{ $programme->title }}" class="w-full h-40 object-cover">
+                     @elseif($programme->featured_image)
+                         <img src="{{ asset('storage/' . $programme->featured_image) }}" alt="{{ $programme->title }}" class="w-full h-40 object-cover">
+                     @else
+                         <div class="w-full h-40 bg-gradient-to-br from-[#003DA5] to-[#0072C6] flex items-center justify-center text-white text-lg font-bold">
+                             {{ $programme->title }}
+                         </div>
+                     @endif
+                     <div class="p-6">
+                         <h3 class="text-xl font-bold text-[#003DA5] mb-2">{{ $programme->title }}</h3>
+                         <p class="text-gray-600 text-sm leading-relaxed">{{ Str::limit($programme->description, 120) }}</p>
+                         <a href="{{ route('programmes.show', ['slug' => $programme->slug]) }}" class="inline-block mt-4 text-[#0072C6] font-medium hover:text-[#003DA5] transition-colors text-sm">
+                             Discover &rarr;
+                         </a>
+                     </div>
+                 </div>
             @endforeach
         </div>
     </div>
@@ -109,14 +111,21 @@
             </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @foreach ([
-                ['title' => 'UNESCO Supports Zimbabwe\'s Digital Education Transformation', 'date' => 'July 10, 2026', 'desc' => 'New initiative to strengthen ICT standards and practice in schools across Zimbabwe.', 'image' => 'news/digital-education.jpg'],
-                ['title' => 'World Heritage Conference Highlights African Heritage', 'date' => 'July 5, 2026', 'desc' => 'Delegates gather to discuss preservation of cultural heritage sites facing climate threats.','image' => 'news/heritage-conference.jpg'],
-                ['title' => 'Science Partnership Programme Launched', 'date' => 'June 28, 2026', 'desc' => 'New partnerships established to advance scientific research and innovation in Zimbabwe.','image' => 'news/science-partnership.jpg'],
-            ] as $news)
-                <x-card image="{{ asset('images/' . $news['image']) }}" title="{{ $news['title'] }}" description="{{ $news['desc'] }}">
-                    <p class="text-sm text-gray-400 mt-2">{{ $news['date'] }}</p>
-                    <a href="{{ route('news.index', ['language' => $language]) }}" class="inline-block mt-4 text-[#0072C6] font-medium hover:text-[#003DA5] transition-colors">
+            @foreach ($latestArticles as $article)
+                @php
+                    $articleImage = $article->getFirstMediaUrl('featured_image') 
+                        ?: ($article->featured_image ? asset('storage/' . $article->featured_image) : asset('images/news-placeholder.jpg'));
+                @endphp
+                <x-card image="{{ $articleImage }}" title="{{ $article->title }}" description="{{ Str::limit($article->excerpt, 120) }}">
+                    <div class="flex items-center space-x-2 mt-2">
+                        <span class="bg-[#E8F4FD] text-[#003DA5] text-xs font-semibold px-2 py-0.5 rounded-full">
+                            {{ ucfirst(str_replace('_', ' ', $article->category)) }}
+                        </span>
+                        <span class="text-sm text-gray-400">
+                            {{ $article->published_at ? $article->published_at->format('M d, Y') : $article->created_at->format('M d, Y') }}
+                        </span>
+                    </div>
+                    <a href="{{ route('news.show', ['slug' => $article->slug]) }}" class="inline-block mt-4 text-[#0072C6] font-medium hover:text-[#003DA5] transition-colors">
                         Read More &rarr;
                     </a>
                 </x-card>
@@ -170,15 +179,21 @@
             </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @foreach ([
-                ['title' => 'Annual Report 2025', 'desc' => 'A comprehensive overview of UNESCO activities and achievements in Zimbabwe over the past year.'],
-                ['title' => 'Education Policy Brief', 'desc' => 'Key findings and recommendations for strengthening Zimbabwe\'s national education system.'],
-                ['title' => 'Heritage Assessment Report', 'desc' => 'Detailed assessment of cultural and natural heritage sites requiring protection in Zimbabwe.'],
-            ] as $pub)
-                <x-card title="{{ $pub['title'] }}" description="{{ $pub['desc'] }}">
-                    <a href="{{ route('publications.index', ['language' => $language]) }}" class="inline-block mt-4 bg-[#0072C6] text-white px-4 py-2 rounded text-sm font-medium hover:bg-[#003DA5] transition-colors">
-                        Download PDF
-                    </a>
+            @foreach ($latestPublications as $pub)
+                <x-card title="{{ $pub->title }}" description="{{ Str::limit($pub->description, 120) }}">
+                    <div class="mt-4 flex items-center justify-between">
+                        <a href="{{ route('publications.show', ['slug' => $pub->slug]) }}" class="text-[#0072C6] text-sm font-semibold hover:text-[#003DA5] transition-colors">
+                            View Details
+                        </a>
+                        @if($pub->getFirstMediaUrl('file') || $pub->file_path)
+                            <a href="{{ $pub->getFirstMediaUrl('file') ?: asset('storage/' . $pub->file_path) }}" target="_blank" class="bg-[#0072C6] text-white px-4 py-2 rounded text-sm font-medium hover:bg-[#003DA5] transition-colors flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                Download
+                            </a>
+                        @endif
+                    </div>
                 </x-card>
             @endforeach
         </div>

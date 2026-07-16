@@ -1,0 +1,16 @@
+{
+    "name": "ruten/unesco",
+    "description": "website",
+    "autoload": {
+        "psr-4": {
+            "Ruten\\Unesco\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "WayneRutendo",
+            "email": "waynewekare@gmail.com"
+        }
+    ],
+    "require": {}
+}
