@@ -15,6 +15,11 @@ until php artisan tinker --execute="DB::connection()->getPdo();" 2>/dev/null; do
 done
 echo "MySQL is ready!"
 
+# Copy .env.example if .env does not exist
+if [ ! -f .env ]; then
+    cp .env.example .env
+fi
+
 # Generate app key if not set
 if ! grep -q "APP_KEY=base64:" .env 2>/dev/null; then
     echo "Generating application key..."
