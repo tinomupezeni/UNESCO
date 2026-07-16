@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# If arguments are passed, execute them and exit (e.g., for composer install)
+if [ "$#" -gt 0 ]; then
+    exec "$@"
+fi
+
 echo "UNESCO Zimbabwe - Starting application..."
 
 # Wait for MySQL to be ready

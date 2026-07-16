@@ -4,19 +4,33 @@
 set -e # Exit immediately if a command exits with a non-zero status.
 
 # 1. Configuration variables
-PROJECT_DIR="$HOME/Documents/unesco-country" # Update this to the actual deployment path on the VM
-DOCKER_COMPOSE_FILE="docker-compose.yml"
-HEALTH_ENDPOINT="http://localhost:8000" # Update to the actual production domain or health check route
+SERVER="dns@10.50.100.93"
+REMOTE_PROJECT_DIR="/home/dns/Documents/unesco-country"
 
-echo "Starting Deployment Pipeline..."
+echo "Starting Deployment Pipeline on Remote Server ($SERVER)..."
+
+# SSH into the server and run the deployment steps
+ssh $SERVER << 'EOF'
+set -e
+
+PROJECT_DIR="/home/dns/Documents/unesco-country"
+DOCKER_COMPOSE_FILE="docker-compose.yml"
+HEALTH_ENDPOINT="http://localhost:8000"
+
+echo "Connected to server. Starting deployment..."
 
 # 2. Pull Latest Code
-cd $PROJECT_DIR
+cd /home/dns/Documents/unesco-country
 git fetch origin main
 git reset --hard origin/main
 
+# Navigate into the subfolder containing the Laravel app and docker-compose.yml
+cd unesco-country
+
 # 3. Build New Images
 echo "Building Docker images..."
+# Remove the existing image to avoid 'already exists' errors during export
+docker rmi unesco-country-app:latest || true
 docker compose -f $DOCKER_COMPOSE_FILE build
 
 # 4. Install Dependencies & Build Frontend
@@ -70,3 +84,6 @@ docker compose -f $DOCKER_COMPOSE_FILE build
 docker compose -f $DOCKER_COMPOSE_FILE up -d --wait
 echo "⚠️ Rollback Complete. Check logs for failure reasons."
 exit 1
+EOF
+
+echo "Remote deployment pipeline finished."
