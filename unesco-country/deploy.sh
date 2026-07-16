@@ -35,15 +35,15 @@ docker compose -f $DOCKER_COMPOSE_FILE build
 
 # 4. Install Dependencies & Build Frontend
 echo "Installing Composer dependencies..."
-docker compose -f $DOCKER_COMPOSE_FILE run --rm app composer install --no-interaction --prefer-dist --optimize-autoloader
+docker compose -f $DOCKER_COMPOSE_FILE run -T --rm app composer install --no-interaction --prefer-dist --optimize-autoloader
 
 echo "Building frontend assets..."
 # Assuming node service can be used to run build, or fallback to local node
-docker compose -f $DOCKER_COMPOSE_FILE run --rm node sh -c "npm install && npm run build"
+docker compose -f $DOCKER_COMPOSE_FILE run -T --rm node sh -c "npm install && npm run build"
 
 # 5. Pre-Flight Database Migrations
 echo "Running Database Migrations..."
-docker compose -f $DOCKER_COMPOSE_FILE run --rm app php artisan migrate --force
+docker compose -f $DOCKER_COMPOSE_FILE run -T --rm app php artisan migrate --force
 
 # 6. Zero-Downtime Deployment (Wait for healthchecks)
 echo "Deploying new containers..."
