@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('UNESCO Zimbabwe')
             ->favicon(url('/unesco-icon.png'))
             ->brandLogo(url('/unesco-icon.png'))
+            ->viteTheme('resources/css/app.css')
             ->colors([
                 'primary' => Color::Blue,
             ])
