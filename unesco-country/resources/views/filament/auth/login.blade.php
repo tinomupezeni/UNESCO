@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    <div class="w-full lg:w-1/2 flex items-center justify-center bg-gradient-to-br from-gray-50 to-white px-6 py-12 sm:px-12">
+    <div class="w-full lg:w-1/2 flex items-center justify-center bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 px-6 py-12 sm:px-12">
         <div class="w-full max-w-sm">
             <div class="lg:hidden flex items-center justify-center gap-3 mb-10">
                 <img
@@ -35,23 +35,23 @@
                     alt="UNESCO"
                     class="h-10"
                 >
-                <span class="text-xl font-bold text-gray-900">UNESCO Zimbabwe</span>
+                <span class="text-xl font-bold text-gray-900 dark:text-white">UNESCO Zimbabwe</span>
             </div>
 
             <div class="mb-8">
-                <h2 class="text-3xl font-bold text-gray-900 tracking-tight">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                     Welcome back
                 </h2>
-                <p class="text-gray-500 mt-2 text-sm">
+                <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm">
                     Sign in to the admin portal
                 </p>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 p-8">
                 {{ $this->content }}
             </div>
 
-            <p class="text-center text-gray-400 text-xs mt-8">
+            <p class="text-center text-gray-400 dark:text-gray-500 text-xs mt-8">
                 &copy; {{ date('Y') }} UNESCO Zimbabwe. All rights reserved.
             </p>
         </div>
