@@ -25,6 +25,7 @@ services:
   node:
     image: node:22-slim
     container_name: unesco-node
+    profiles: ["dev"]
     restart: unless-stopped
     working_dir: /app
     ports:

@@ -47,7 +47,7 @@ docker compose -f $DOCKER_COMPOSE_FILE run -T --rm app php artisan migrate --for
 
 # 6. Zero-Downtime Deployment (Wait for healthchecks)
 echo "Deploying new containers..."
-docker compose -f $DOCKER_COMPOSE_FILE up -d --wait
+docker compose -f $DOCKER_COMPOSE_FILE up -d --wait --remove-orphans
 
 # 7. Post-Deployment Optimization
 echo "Caching Laravel configuration & routes..."
@@ -81,7 +81,7 @@ echo "❌ Deployment Failed Health Check! Initiating Rollback..."
 # Revert git commit and redeploy
 git reset --hard HEAD~1
 docker compose -f $DOCKER_COMPOSE_FILE build
-docker compose -f $DOCKER_COMPOSE_FILE up -d --wait
+docker compose -f $DOCKER_COMPOSE_FILE up -d --wait --remove-orphans
 echo "⚠️ Rollback Complete. Check logs for failure reasons."
 exit 1
 EOF
