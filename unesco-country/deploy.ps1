@@ -2,7 +2,7 @@
 $ErrorActionPreference = "Stop"
 
 # 1. Configuration variables
-$PROJECT_DIR = "C:\inetpub\wwwroot\unesco-country" # Update this to the actual deployment path on the VM
+$PROJECT_DIR = "$env:USERPROFILE\Documents\unesco-country" # Update this to the actual deployment path on the VM
 $DOCKER_COMPOSE_FILE = "docker-compose.yml"
 $HEALTH_ENDPOINT = "http://localhost:8000" # Update to the actual production domain or health check route
 
