@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (str_contains(config('app.url'), 'https://')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         error_reporting(E_ALL & ~E_NOTICE);
         view()->composer('*', function ($view) {
             $view->with('language', app()->getLocale());

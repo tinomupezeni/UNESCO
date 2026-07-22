@@ -4,25 +4,32 @@
 set -e # Exit immediately if a command exits with a non-zero status.
 
 # 1. Configuration variables
-SERVER="dns@10.50.100.93"
-REMOTE_PROJECT_DIR="/home/dns/Documents/unesco-country"
+SERVER="user@10.50.1.44"
+REMOTE_PROJECT_DIR="/home/user/Documents/unesco-country"
 
 echo "Starting Deployment Pipeline on Remote Server ($SERVER)..."
 
 # SSH into the server and run the deployment steps
-ssh $SERVER << 'EOF'
+ssh -T $SERVER << 'EOF'
 set -e
 
-PROJECT_DIR="/home/dns/Documents/unesco-country"
+PROJECT_DIR="/home/user/Documents/unesco-country"
 DOCKER_COMPOSE_FILE="docker-compose.yml"
 HEALTH_ENDPOINT="http://localhost:8000"
 
 echo "Connected to server. Starting deployment..."
 
 # 2. Pull Latest Code
-cd /home/dns/Documents/unesco-country
-git fetch origin main
-git reset --hard origin/main
+if [ ! -d "$PROJECT_DIR" ]; then
+    echo "Project directory not found. Cloning repository..."
+    mkdir -p "$(dirname "$PROJECT_DIR")"
+    git clone --progress https://github.com/tinomupezeni/UNESCO.git "$PROJECT_DIR"
+    cd "$PROJECT_DIR"
+else
+    cd "$PROJECT_DIR"
+    git fetch origin main --progress
+    git reset --hard origin/main
+fi
 
 # Navigate into the subfolder containing the Laravel app and docker-compose.yml
 cd unesco-country
